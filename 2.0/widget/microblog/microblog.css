@@ -1,0 +1,160 @@
+.microblog {
+    position: relative;
+    z-index: 2;
+
+}
+
+.microblog .wrap{
+    background-color:#f6f6f6;
+    border:1px solid #FFFFFF;
+    position:relative;
+    padding:5px 5px 0 5px;
+    zoom:1;
+}
+.microblog .f-area{
+    width: 525px;
+    height: 35px;
+    color: #666666;
+    overflow: auto;
+}
+.microblog  .act{
+    height: 20px;
+    overflow: hidden;
+    padding:5px;
+    position: relative;
+    line-height: 20px;
+}
+
+.microblog  .act .icon-insert-face{
+
+}
+.microblog .act .upload{
+    position: absolute;
+    height: 30px;
+    width: 50px;
+    overflow: hidden;
+    top:0;
+    left: 60px;
+    opacity:0;
+    filter:alpha(opacity=0);
+    cursor: pointer;
+    z-index: 1000;
+}
+.microblog .act .upload input{
+    cursor:pointer;
+    height:25px;
+    width:0;
+    width:60px\0;
+}
+
+.microblog .act .sns-icon{
+    margin-right: 5px;
+    cursor: pointer;
+}
+.microblog .act .skin-red{
+
+    right:5px;
+    line-height:22px;
+
+    position:absolute;
+    top:4px;
+    background: url(http://img07.taobaocdn.com/tps/i7/T1nbXEXcBCXXXXXXXX-55-22.png) no-repeat;
+    display: block;
+    width: 55px;
+    height: 22px;
+    text-align: center;
+    color:#fff;
+
+}
+.microblog .act .skin-red a,.microblog .act .skin-red a:visited{
+    text-decoration: none;
+    color:#fff;
+}
+.microblog .act .rsync{
+    color:#B3B3B3;
+    display:block;
+    right:70px;
+    position:absolute;
+    top:5px;
+}
+.microblog .act .rsync input{
+    vertical-align: middle;
+    margin-right: 5px;
+}
+.microblog .error-msg  {
+    background:none repeat scroll 0 0 #FFFFFF;
+    border:1px solid #E0E0E0;
+    height:20px;
+    line-height:20px;
+
+    padding:2px 5px;
+    position:absolute;
+    left:330px;
+
+    width:185px;
+    z-index:10;
+    display: none;
+    top:82px;
+}
+.microblog .error-msg .arrow {
+    background-position:-482px -42px;
+    display:block;
+    height:5px;
+    position:absolute;
+    right:170px;
+    top:-5px;
+    width:9px;
+}
+.microblog .tips{
+    background: url(http://img01.taobaocdn.com/tps/i1/T1IKJIXlVHXXXXXXXX-298-27.png) 0 0 no-repeat;
+    text-align: right;
+    height: 30px;
+    color: #b0b0b0;
+    line-height: 32px;
+}
+.microblog .tips .num{
+    font-size:16px;
+}
+
+.microblog  .sub-tips{
+    position: absolute;
+    top:90px;
+    right:0px;
+    display: none;
+    width: 160px;
+
+}
+.microblog  .sub-tips {
+    margin:2px;
+    border:1px solid #f9b967;
+    background:#ffffe1;
+    padding:5px;
+    margin-top:-5px;
+    z-index: 1000;
+}
+
+.microblog  .sub-tips i {
+    background:url("http://a.tbcdn.cn/app/sns/theme/img/horn_top.png") no-repeat scroll 0 0 transparent;
+    display:block;
+    height:4px;
+    left:120px;
+    overflow:hidden;
+    position:absolute;
+    top:-4px;
+    width:9px;
+   
+}
+
+.microblog  .sub-tips p {
+    padding:6px 10px;
+}
+
+.microblog  .sub-tips p a {
+    margin-left:5px;
+}
+
+.microblog  .sub-tips .sns-icon {
+    position:absolute;
+    top:5px;
+    right:4px;
+}

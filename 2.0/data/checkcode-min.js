@@ -1,0 +1,1 @@
+SNS("SNS.data.CheckCode",function(){var b=SNS.sys.Helper;var a=function(c){a.superclass.constructor.call(this,c)};a.DATAS={getCheckCode:{dataType:"json",url:b.getApiURI("http://comment.jianghu.{serverHost}/json/check_code.htm")}};SNS.Base.extend(a,SNS.Base);SNS.data.CheckCode=a});

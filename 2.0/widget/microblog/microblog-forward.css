@@ -1,0 +1,58 @@
+
+.microblog-sub{
+    width: 390px;
+}
+.microblog-sub .header  {
+    background: #f9fdfd;
+    height: 22px;
+    line-height: 22px;
+    padding: 0 10px;
+}
+.microblog-sub .content{
+    padding: 20px 10px;
+}
+.microblog-sub .header{
+    border-bottom: solid 1px #cdE4Eb;
+    font-weight: bold;
+}
+.microblog-sub .blog{
+    line-height: 20px;
+    margin-bottom: 20px;
+}
+.microblog-sub .title{
+    margin-bottom: 2px;
+    position:relative;
+}
+.microblog-sub .title .num{
+    position: absolute;
+    top: 0;
+    right:5px;
+}
+.microblog-sub .f-txt{
+    width:355px;
+    height: 54px;
+    overflow:hidden;
+    word-wrap:break-word;
+}
+.microblog-sub  .input {
+    margin-bottom: 0px;
+}
+.microblog-sub  .input input{
+    vertical-align: middle;
+    margin-right: 5px;
+}
+.microblog-sub .num{
+    color: #b0b0b0;
+}
+.microblog-sub .act{
+    text-align: center;
+    margin-top: 20px;
+}
+.microblog-sub .act .cancle{
+    margin-left: 20px;
+}
+
+.microblog-sub .icon-insert-face{
+    text-decoration: none;
+  cursor: pointer;
+}
