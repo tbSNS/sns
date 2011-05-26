@@ -65,7 +65,7 @@
     //存储正在加载的模块信息，防止重复加载
     loadingModules = {},
     //当前正在等待被记录的模块信息
-    pendingModule,
+    pendingModules =[],
     // 存储已经载入到模块环境的模块
     memoryModules = {},
     // 存储模块exports 对象
@@ -247,7 +247,7 @@
 
     var initializeModule = function(module,moduleFactory){
         var require, exports;
-  console.log('module ('+module.id   +') init ')
+        console.log('module ('+module.id   +') init ')
         require = createRequire(module);
         exports = requireModules[module.id] = {};
         var result =moduleFactory(require, exports, module);
@@ -349,12 +349,12 @@
     }
 
     Module.prototype.declare = function( dependencies, moduleFactory) {
-
         if(isFunction(dependencies)){
             moduleFactory =dependencies;
             dependencies = [];
         }
-        var require =this.require, uri;
+        
+        var uri ,id;
 
         if (document.attachEvent && !window.opera) {
             // For IE6-9 browsers, the script onload event may not fire right
@@ -381,26 +381,22 @@
         // NOTE: If the id-deriving methods above is failed, then falls back
         // to use onload event to get the module uri.
         }
-        if (uri) {
-          
-            require.memoize(uriToId(uri), dependencies, moduleFactory);
-
-        } else {
-            // Saves information for "real" work in the onload event.
-            pendingModule = {
-                dependencies:dependencies,
-                moduleFactory:moduleFactory
-            };
+        if (uri){
+            id = uriToId(uri);
         }
-
+        
+        // Saves information for "real" work in the onload event.
+        pendingModules.push({
+            id:id,
+            dependencies:dependencies,
+            moduleFactory:moduleFactory
+        })
+        
     };
 
     Module.prototype.provide = function (dependencies, callback) {
        
-
- 
         var self = this ,deps = [], id, require = self.require;
-        //验证参数
         // 去重
         for(var i=0, n = dependencies.length;i<n;i++){
             id= require.id(dependencies[i]);
@@ -409,9 +405,9 @@
             }
         }
     
-        //如果没有依赖，直接运行callback
+        //如果所有的依赖都已经被加载，直接运行callback
         if(deps.length === 0) {
-            callback();
+            if(callback)callback();
             return
         }
     
@@ -426,7 +422,7 @@
                     if (m) {
                         remain += m;
 
-                        provide(deps, function() {
+                        self.provide(deps, function() {
                             remain -= m;
                             if (remain === 0) if(callback)callback();
                         }, true);
@@ -441,34 +437,21 @@
 
     Module.prototype.load = function(moduleIdentifier, callback){
         var require =this.require;
-        if (module.hasOwnProperty("declare"))
-            delete module.declare;
+        if (context.module.hasOwnProperty("declare"))
+            delete context.module.declare;
       
         var id = require.id(moduleIdentifier);
-       
         var uri = require.uri(moduleIdentifier);
      
         var cb =function() {
-            if (pendingModule) {
-                var moduleFactory =pendingModule.moduleFactory;
 
-                //为moduleFactory 增加一个适配器， 使模块的返回结果进行加工和处理
-                var moduleAdapte = function(require, exports ,module){
-                    var result = moduleFactory(require, exports ,module);
-                    if(result!= undefined&&result.moduleContext){
-                        result.moduleContex = module;
-                       
-                    } else{
-                        for(var p in exports){
-                            if(exports[p].moduleContext)exports[p].moduleContext = module;
-                        }
-                    }
-                    return result;
-                }
-                require.memoize(id, pendingModule.dependes, moduleAdapte);
-                pendingModule = null;
+            for(var i=0; i< pendingModules.length; i++){
+                var mod =pendingModules[i];
+                mod.id = mod.id? mod.id:id;
+                //为moduleFactory 增加一个插件适配器， 允许第三方插件对模块的返回结果进行加工和处理
+                require.memoize(mod.id, mod.dependencies, mod.moduleFactory);
             }
-
+            pendingModules = [];
             if (loadingModules[uri]) {
                 delete loadingModules[uri];
             }
@@ -481,7 +464,7 @@
             scriptOnload(loadingModules[uri], cb);
         }
         else {
-            // See fn-define.js: "uri = data.pendingModIE"
+           
             scriptTagMemoryIE = uri;
             console.log('load module <a href="'+uri+'">'+uri+'</a>')
             loadingModules[uri] = getScript(uri, cb);
@@ -493,53 +476,55 @@
     }
 
     
-    /**
+
+
+
+     /**
      * -----------------------------------------------
      * 系统初始化
      * -----------------------------------------------
      */
 
     var bootstrap = function (){
-
+        // 把当前页面的路径作为主模块路径
         mainModuleDir = dirname(uriToId(window.location.href , true));
         /** Extra-module environment */
-   
         context.module  = new Module('', []);
-
         context.require = createRequire(context.module);
-        
     }
-
     bootstrap();
-
 
     /**
      * -----------------------------------------------
      * 主模块初始化
      * -----------------------------------------------
      */
-    
+
     var initializeMainModule = function (dependencies, moduleFactory){
         /* special extra-module environment bootstrap declare needs to go */
-        if (module.hasOwnProperty("declare"))delete module.declare;
+        var
+        module =context.module,
+        require = context.require,
+        scripts,
+        currentScript,
+        id;
 
+        if (module.hasOwnProperty("declare"))delete module.declare;
         if (module.constructor.prototype.main) throw new Error("Main module has already been initialized!");
 
-        var scripts = document.getElementsByTagName("SCRIPT");
-        var currentScript = scripts[scripts.length-1];
-     
-        var id = require.id(currentScript.src);
- 
+        scripts = document.getElementsByTagName("SCRIPT");
+        currentScript = scripts[scripts.length-1];
+
+        id = require.id(currentScript.src);
+
         mainModuleDir = dirname(id);
         require.memoize(require.uri(id), dependencies, moduleFactory);
         module.constructor.prototype.main = new Module(id, dependencies);
-       
+
         module.provide(dependencies,function(){
-           
             initializeModule(module.constructor.prototype.main,moduleFactory);
-             
- 
-        }) 
+
+        })
     }
 
     module.declare = function (dependencies, moduleFactory){
@@ -549,6 +534,7 @@
         }
         initializeMainModule(dependencies, moduleFactory);
     }
+
 
 
 })(window);
